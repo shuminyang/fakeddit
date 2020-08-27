@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, CreateDateColumn, UpdateDateColumn } from "typeorm"
 import { ObjectType, Field } from "type-graphql"
 
 @ObjectType()
@@ -10,15 +10,19 @@ class Post extends BaseEntity {
   id: number
 
   @Field()
+  @Column("varchar")
+  title: string
+
+  @Field()
   @Column("text")
   content: string
 
   @Field()
-  @Column("timestamptz")
+  @CreateDateColumn()
   createdAt: Date
 
   @Field()
-  @Column("timestamptz")
+  @UpdateDateColumn()
   updatedAt: Date
 }
 
