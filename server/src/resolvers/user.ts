@@ -5,19 +5,46 @@ import { UsernameAndPasswordInput, UserResponse } from "./types/userTypes"
 
 @Resolver()
 class UserResolver {
-  @Mutation(() => User)
+  @Mutation(() => UserResponse)
   async registerUser(
     @Arg("input") input: UsernameAndPasswordInput
-  ) {
+  ): Promise<UserResponse> {
+    if (input.password.length < 6) {
+      return {
+        errors: [{
+          field: "Password",
+          message: "Password must be greater than 6"
+        }]
+      }
+    }
     const hashed = await hash(input.password)
     const user = User.create({
       username: input.username,
       password: hashed,
       email: input.email,
     })
-    await user.save()
+    try {
+      await user.save()
+    } catch (e) {
+      if (e.code === '23505') {
+        return {
+          errors: [{
+            field: "E-mail",
+            message: "E-mail alread exists."
+          }]
+        }
+      }
+      return {
+        errors: [{
+          field: "Unexpected",
+          message: "Unexpected, try again."
+        }]
+      }
+    }
 
-    return user
+    return {
+      user,
+    }
   }
 
   @Mutation(() => UserResponse)

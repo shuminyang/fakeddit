@@ -17,7 +17,7 @@ class User extends BaseEntity {
   password: string
 
   @Field()
-  @Column("varchar")
+  @Column("varchar", { unique: true })
   email: string
 
   @Field()
