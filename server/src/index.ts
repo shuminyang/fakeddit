@@ -6,6 +6,10 @@ import { ApolloServer } from "apollo-server-express"
 import { buildSchema } from "type-graphql"
 import PostResolver from "./resolvers/post"
 import UserResolver from "./resolvers/user"
+import redis from "redis"
+import session from "express-session"
+import connectRedis from "connect-redis"
+import { CustomContext } from "./types"
 
 const main = async () => {
   await createConnection({
@@ -23,6 +27,26 @@ const main = async () => {
   })
 
   const app = express()
+  const RedisStore = connectRedis(session)
+  const redisClient = redis.createClient()
+
+  app.use(
+    session({
+      name: "qid",
+      store: new RedisStore({
+        client: redisClient,
+        disableTouch: true,
+      }),
+      cookie: {
+        maxAge: 1000 * 60,
+        httpOnly: true,
+        secure: config.__prod__,
+      },
+      saveUninitialized: false,
+      secret: "mysecret",
+      resave: false,
+    })
+  )
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
@@ -32,6 +56,7 @@ const main = async () => {
         UserResolver
       ],
     }),
+    context: ({ req, res }): CustomContext => ({ req, res })
   })
 
   apolloServer.applyMiddleware({ app })
