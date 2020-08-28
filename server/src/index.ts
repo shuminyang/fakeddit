@@ -5,9 +5,9 @@ import { createConnection } from "typeorm"
 import { ApolloServer } from "apollo-server-express"
 import { buildSchema } from "type-graphql"
 import PostResolver from "./resolvers/post"
+import UserResolver from "./resolvers/user"
 
 const main = async () => {
-  console.log(__dirname)
   await createConnection({
     type: "postgres",
     host: config.dbHost,
@@ -16,6 +16,7 @@ const main = async () => {
     password: config.dbPass,
     database: config.dbName,
     synchronize: true,
+    logging: true,
     entities: [
       __dirname + "/entities/*.js"
     ]
@@ -26,7 +27,10 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       validate: false,
-      resolvers: [PostResolver]
+      resolvers: [
+        PostResolver,
+        UserResolver
+      ],
     }),
   })
 
