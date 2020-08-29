@@ -1,5 +1,4 @@
 import React from "react"
-import PropTypes from "prop-types"
 import Head from "next/head"
 import { ThemeProvider } from "@material-ui/core/styles"
 import CssBaseline from "@material-ui/core/CssBaseline"
@@ -9,8 +8,12 @@ import { Provider, createClient } from "urql"
 
 const urqlClient = createClient({ url: 'http://localhost:4000/graphql' });
 
-export default function MyApp(props) {
-  const { Component, pageProps } = props
+interface IMyApp {
+  Component: () => JSX.Element,
+  pageProps: object,
+}
+
+export default function MyApp({ Component, pageProps }: IMyApp) {
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -35,9 +38,4 @@ export default function MyApp(props) {
       </Provider>
     </React.Fragment>
   )
-}
-
-MyApp.propTypes = {
-  Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired,
 }
