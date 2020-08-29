@@ -7,7 +7,7 @@ import theme from "../src/theme"
 import Header from "../src/components/header"
 import { Provider, createClient } from "urql"
 
-const urqlClient = createClient({ url: 'https://0ufyz.sse.codesandbox.io' });
+const urqlClient = createClient({ url: 'http://localhost:4000/graphql' });
 
 export default function MyApp(props) {
   const { Component, pageProps } = props
@@ -23,7 +23,7 @@ export default function MyApp(props) {
   return (
     <React.Fragment>
       <Head>
-        <title>My page</title>
+        <title>Fakeddit</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <Provider value={urqlClient}>
