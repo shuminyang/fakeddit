@@ -1,6 +1,7 @@
 import { useState } from "react"
 import Modal from '@material-ui/core/Modal'
 import { makeStyles, Theme, createStyles } from "@material-ui/core"
+import RegisterForm from "./Form";
 
 interface IRegister {
   isOpen: boolean
@@ -22,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       position: 'absolute',
-      width: 400,
+      width: 500,
       backgroundColor: theme.palette.background.paper,
       boxShadow: theme.shadows[5],
       padding: theme.spacing(2, 4, 3),
@@ -42,10 +43,7 @@ const RegisterModal = ({ isOpen, handleClose }: IRegister) => {
       onClose={handleClose}
     >
       <div style={modalStyle} className={paper}>
-        <h2 id="simple-modal-title">Text in a modal</h2>
-        <p id="simple-modal-description">
-          Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-        </p>
+        <RegisterForm />
       </div>
     </Modal>
   )
