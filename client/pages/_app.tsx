@@ -6,8 +6,7 @@ import theme from "../src/theme"
 import Header from "../src/components/header"
 import { Provider, createClient } from "urql"
 
-const urqlClient = createClient({ url: 'http://localhost:4000/graphql' });
-
+const urqlClient = createClient({ url: 'http://localhost:4000/graphql' })
 interface IMyApp {
   Component: () => JSX.Element,
   pageProps: object,
