@@ -1,7 +1,7 @@
 import { useState } from "react"
 import Button from "@material-ui/core/Button"
 import { makeStyles } from "@material-ui/core"
-import Register from "../register/RegisterModal"
+import Register from "./RegisterModal"
 
 const useStyles = makeStyles(() => ({
   button: {
