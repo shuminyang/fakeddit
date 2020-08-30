@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import { Formik, Form } from "formik"
 import FormControl from "@material-ui/core/FormControl"
 import TextField from "@material-ui/core/TextField"
@@ -5,6 +6,25 @@ import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import { makeStyles } from "@material-ui/core"
 import { registerFormSchema } from "./FormValidation"
+import { useMutation } from "urql"
+
+const REGISTER_MUTATION = `
+mutation RegisterUser($email: String!, $userName: String!, $password: String!) {
+  registerUser(input:{ username: $userName, password: $password, email: $email }) {
+    errors {
+      field
+      message
+    }
+    user {
+      id
+      username
+      email
+      createdAt
+      updatedAt
+    }
+  }
+}
+`
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -24,12 +44,18 @@ const useStyles = makeStyles(() => ({
 }))
 
 const RegisterForm = () => {
+  const [{data, error}, register] = useMutation(REGISTER_MUTATION)
   const { input, form, button, title } = useStyles()
+
+  useEffect(() => {
+    console.log(data)
+  }, [data])
+
   return (
     <Formik
       initialValues={{ email: "", userName: "", password: "" }}
       onSubmit={(values) => {
-        console.log(values)
+        register(values)
       }}
       validationSchema={registerFormSchema}
       validateOnChange={false}
