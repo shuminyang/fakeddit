@@ -43,7 +43,9 @@ const RegisterModal = ({ isOpen, handleClose }: IRegister) => {
       onClose={handleClose}
     >
       <div style={modalStyle} className={paper}>
-        <RegisterForm />
+        <RegisterForm
+          closeModal={handleClose}
+        />
       </div>
     </Modal>
   )

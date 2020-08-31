@@ -1,30 +1,12 @@
-import { useEffect } from "react"
 import { Formik, Form } from "formik"
 import FormControl from "@material-ui/core/FormControl"
 import TextField from "@material-ui/core/TextField"
 import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
+import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core"
 import { registerFormSchema } from "./FormValidation"
-import { useMutation } from "urql"
-
-const REGISTER_MUTATION = `
-mutation RegisterUser($email: String!, $userName: String!, $password: String!) {
-  registerUser(input:{ username: $userName, password: $password, email: $email }) {
-    errors {
-      field
-      message
-    }
-    user {
-      id
-      username
-      email
-      createdAt
-      updatedAt
-    }
-  }
-}
-`
+import { useRegisterUserMutation } from "../../generated/graphql"
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -39,28 +21,41 @@ const useStyles = makeStyles(() => ({
     marginBottom: 8
   },
   button: {
+    minWidth: 88,
+    minHeight: 36,
     margin: "0 8px 8px auto",
   }
 }))
 
-const RegisterForm = () => {
-  const [{data, error}, register] = useMutation(REGISTER_MUTATION)
-  const { input, form, button, title } = useStyles()
+interface IRegisterForm {
+  closeModal: () => void
+}
 
-  useEffect(() => {
-    console.log(data)
-  }, [data])
+const RegisterForm = ({ closeModal }: IRegisterForm) => {
+  const [, register] = useRegisterUserMutation()
+  const { input, form, button, title } = useStyles()
 
   return (
     <Formik
       initialValues={{ email: "", userName: "", password: "" }}
-      onSubmit={(values) => {
-        register(values)
+      onSubmit={async (values, { setErrors }) => {
+        const { data } = await register(values)
+
+        if (data.registerUser.errors) {
+          data.registerUser.errors.forEach((err) => {
+            setErrors({
+              [err.field]: err.message
+            })
+          })
+        } else {
+          closeModal()
+        }
+
       }}
       validationSchema={registerFormSchema}
       validateOnChange={false}
     >
-      {({ values, handleChange, errors }) => (
+      {({ values, handleChange, errors, isSubmitting }) => (
         <Form className={form} >
           <Typography variant="h6" className={title}>
             Sign up
@@ -108,7 +103,7 @@ const RegisterForm = () => {
             color="primary"
             type="submit"
           >
-            Sign up
+            {isSubmitting ? <CircularProgress size={22} /> : "Sign up"}
           </Button>
         </Form>
 

@@ -13,7 +13,7 @@ class UserResolver {
     if (input.password.length < 6) {
       return {
         errors: [{
-          field: "Password",
+          field: "password",
           message: "Password must be greater than 6"
         }]
       }
@@ -30,7 +30,7 @@ class UserResolver {
       if (e.code === '23505') {
         return {
           errors: [{
-            field: "E-mail",
+            field: "email",
             message: "E-mail alread exists."
           }]
         }
