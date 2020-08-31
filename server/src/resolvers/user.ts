@@ -1,7 +1,7 @@
 import { Resolver, Mutation, Arg, Ctx } from "type-graphql"
 import User from "../entities/User"
 import { hash, verify } from "argon2"
-import { UsernameAndPasswordInput, UserResponse } from "./types/userTypes"
+import { UsernameAndPasswordInput, UserResponse, LoginInput } from "./types/userTypes"
 import { CustomContext } from "src/types"
 
 @Resolver()
@@ -50,7 +50,7 @@ class UserResolver {
 
   @Mutation(() => UserResponse)
   async loginUser(
-    @Arg("input") input: UsernameAndPasswordInput,
+    @Arg("input") input: LoginInput,
     @Ctx() { req }: CustomContext
   ): Promise<UserResponse> {
     const user = await User.findOne({ where: { email: input.email } })

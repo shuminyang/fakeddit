@@ -12,6 +12,14 @@ export class UsernameAndPasswordInput {
   email: string
 }
 
+@InputType()
+export class LoginInput {
+  @Field()
+  email: string;
+  @Field()
+  password: string;
+}
+
 @ObjectType()
 export class UserResponse {
   @Field(() => [FieldError], { nullable: true })

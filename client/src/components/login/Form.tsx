@@ -5,8 +5,8 @@ import Typography from "@material-ui/core/Typography"
 import Button from "@material-ui/core/Button"
 import CircularProgress from "@material-ui/core/CircularProgress"
 import { makeStyles } from "@material-ui/core"
-import { registerFormSchema } from "./FormValidation"
-import { useRegisterUserMutation } from "../../generated/graphql"
+import { loginFormSchema } from "./FormValidation"
+import { useLoginMutation } from "../../generated/graphql"
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -27,22 +27,22 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-interface IRegisterForm {
+interface ILoginForm {
   closeModal: () => void
 }
 
-const RegisterForm = ({ closeModal }: IRegisterForm) => {
-  const [, register] = useRegisterUserMutation()
+const LoginForm = ({ closeModal }: ILoginForm) => {
+  const [, login] = useLoginMutation()
   const { input, form, button, title } = useStyles()
 
   return (
     <Formik
-      initialValues={{ email: "", username: "", password: "" }}
+      initialValues={{ email: "", password: "" }}
       onSubmit={async (values, { setErrors }) => {
-        const { data } = await register({ input: values })
+        const { data } = await login({ input: values })
 
-        if (data.registerUser.errors) {
-          data.registerUser.errors.forEach((err) => {
+        if (data.loginUser.errors) {
+          data.loginUser.errors.forEach((err) => {
             setErrors({
               [err.field]: err.message
             })
@@ -52,13 +52,13 @@ const RegisterForm = ({ closeModal }: IRegisterForm) => {
         }
 
       }}
-      validationSchema={registerFormSchema}
+      validationSchema={loginFormSchema}
       validateOnChange={false}
     >
       {({ values, handleChange, errors, isSubmitting }) => (
         <Form className={form} >
           <Typography variant="h6" className={title}>
-            Sign up
+            Log in
           </Typography>
           <FormControl>
             <TextField
@@ -70,18 +70,6 @@ const RegisterForm = ({ closeModal }: IRegisterForm) => {
               onChange={handleChange}
               error={!!errors.email}
               helperText={errors.email}
-            />
-          </FormControl>
-          <FormControl>
-            <TextField
-              name="userName"
-              classes={{ root: input }}
-              label="UserName"
-              variant="outlined"
-              value={values.username}
-              onChange={handleChange}
-              error={!!errors.username}
-              helperText={errors.username}
             />
           </FormControl>
           <FormControl>
@@ -112,4 +100,4 @@ const RegisterForm = ({ closeModal }: IRegisterForm) => {
   )
 }
 
-export default RegisterForm
+export default LoginForm
